@@ -1,5 +1,6 @@
-package com.ellamzoughi.restcountriesexplorer.model
+package com.ellamzoughi.restcountriesexplorer.api
 
+import com.ellamzoughi.restcountriesexplorer.model.CountryBean
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -10,9 +11,6 @@ import retrofit2.http.Query
 interface RESTCountriesAPI {
     @GET("all")
     fun getAllCountries(): Call<List<CountryBean>>
-
-    @GET("independent")
-    fun getIndependentCountries(@Query("status") status: Boolean = true): Call<List<CountryBean>>
 
     @GET("name/{name}")
     fun getCountryByName(@Path("name") name: String, @Query("fullText") fullText: Boolean = false): Call<List<CountryBean>>

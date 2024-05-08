@@ -3,17 +3,32 @@ package com.ellamzoughi.restcountriesexplorer.ui.theme
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = DarkPurple,
+    secondary = DarkPink,
+    tertiary = DarkGrey,
+    background = Color.Black,
+    surface = DarkGrey,
+    onPrimary = Color.White,
+    onSecondary = Color.White,
+    onTertiary = Color.White,
+    onBackground = Color.White,
+    onSurface = Color.White
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+    primary = LightPurple,
+    secondary = LightPink,
+    tertiary = LightGrey,
+    background = Color.White,
+    surface = LightGrey,
+    onPrimary = DarkPurple,
+    onSecondary = DarkPink,
+    onTertiary = DarkGrey,
+    onBackground = DarkGrey,
+    onSurface = DarkGrey
 )
 
 @Composable

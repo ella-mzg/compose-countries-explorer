@@ -1,55 +1,60 @@
 package com.ellamzoughi.restcountriesexplorer.ui
 
-import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+// import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.ellamzoughi.restcountriesexplorer.ui.theme.RestCountriesExplorerTheme
+import com.ellamzoughi.restcountriesexplorer.ui.theme.ErrorColor
 
-@Preview(showBackground = true, showSystemUi = true)
-@Preview(
-     uiMode = Configuration.UI_MODE_NIGHT_YES,
-    locale = "FR"
-)
 @Composable
-fun ErrorPreview() {
-    RestCountriesExplorerTheme {
-        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-            Column {
-                Text(text = "With text:")
-                MyError(errorMessage = "This is an Error Message.")
-                Text(text = "With spaces:")
-                MyError(errorMessage = "   ")
-                Text(text = "Empty:")
-                MyError(errorMessage = "")
-                Text(text = "Null:")
-                MyError(errorMessage = null)
-            }
-
-        }
+fun CustomButton(
+    onClick: () -> Unit,
+    text: String,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    textColor: Color = Color.White,
+    fontWeight: FontWeight = FontWeight.SemiBold
+) {
+    Button(
+        onClick = onClick,
+        modifier = modifier,
+        enabled = enabled
+    ) {
+        Text(
+            text = text,
+            color = textColor,
+            fontWeight = fontWeight
+        )
     }
 }
 
 @Composable
-fun MyError(modifier: Modifier = Modifier, errorMessage: String?) {
-    AnimatedVisibility(!errorMessage.isNullOrBlank()) {
-        Text(
-            text = errorMessage ?: "",
-            color = MaterialTheme.colorScheme.onError,
+fun CustomError(modifier: Modifier = Modifier, errorMessage: String?) {
+    AnimatedVisibility(visible = !errorMessage.isNullOrBlank()) {
+        Column(
             modifier = modifier
-                .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.error)
-                .padding(6.dp)
-        )
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = errorMessage ?: "",
+                color = ErrorColor,
+                style = MaterialTheme.typography.bodyLarge,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .padding(all = 12.dp)
+            )
+        }
     }
 }

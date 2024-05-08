@@ -1,11 +1,11 @@
-package com.ellamzoughi.restcountriesexplorer
+package com.ellamzoughi.restcountriesexplorer.viewmodel
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ellamzoughi.restcountriesexplorer.model.CountryBean
-import com.ellamzoughi.restcountriesexplorer.model.RESTCountriesAPI
+import com.ellamzoughi.restcountriesexplorer.api.RESTCountriesAPI
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -21,8 +21,30 @@ class MainViewModel : ViewModel() {
         fetchCountriesFromCall(api.getAllCountries())
     }
 
-    fun loadIndependentCountries(status: Boolean = true) {
-        fetchCountriesFromCall(api.getIndependentCountries(status))
+    fun searchCountryByName(name: String) {
+        runInProgress.value = true
+        errorMessage.value = ""
+
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val response = api.getCountryByName(name, false).execute()
+                if (response.isSuccessful) {
+                    val countries = response.body() ?: emptyList()
+                    countryList.clear()
+                    if (countries.isEmpty()) {
+                        errorMessage.value = "No results found. Check the spelling or try another search term."
+                    } else {
+                        countryList.addAll(countries)
+                    }
+                } else {
+                    handleErrors(response.code())
+                }
+            } catch (e: Exception) {
+                errorMessage.value = "Check your internet connection and try again."
+            } finally {
+                runInProgress.value = false
+            }
+        }
     }
 
     private fun fetchCountriesFromCall(call: Call<List<CountryBean>>) {
@@ -37,13 +59,21 @@ class MainViewModel : ViewModel() {
                     countryList.clear()
                     countryList.addAll(countries)
                 } else {
-                    errorMessage.value = "Error: ${response.code()} - ${response.message()}"
+                    handleErrors(response.code())
                 }
             } catch (e: Exception) {
-                errorMessage.value = "Exception: ${e.message}"
+                errorMessage.value = "Check your internet connection and try again."
             } finally {
                 runInProgress.value = false
             }
+        }
+    }
+
+    private fun handleErrors(code: Int) {
+        when (code) {
+            404 -> errorMessage.value = "No countries found. Check the spelling and try again."
+            500 -> errorMessage.value = "Server error. Please try again later."
+            else -> errorMessage.value = "Unexpected error occurred. Error code: $code"
         }
     }
 }
